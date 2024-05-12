@@ -21,6 +21,22 @@ export const UserInactivityProvider = ({ children }: any) => {
         router.back();
       }
     }
+
+    if (nextAppState === "background") {
+      recordStartTime();
+    } else if (nextAppState === "active" && appState.current === "background") {
+      const elapsed = Date.now() - storage.getNumber("startTime")!;
+
+      if (elapsed >= LOCK_TIME) {
+        router.push("/(modals)/lock");
+      }
+    }
+
+    appState.current = nextAppState;
+  };
+
+  const recordStartTime = () => {
+    storage.set("startTime", Date.now());
   };
 
   useEffect(() => {
@@ -28,7 +44,11 @@ export const UserInactivityProvider = ({ children }: any) => {
       "change",
       handleAppStateChange
     );
-  });
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   return children;
 };
