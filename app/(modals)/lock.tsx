@@ -1,17 +1,11 @@
 import BackspaceButton from "@/components/BackspaceButton";
+import Biometric from "@/components/Biometric";
 import { OFFSET, TIME, codeLength } from "@/constants/constants";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import * as LocalAuthentication from "expo-local-authentication";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -19,6 +13,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from "react-native-reanimated";
+import { styles } from "../../styles/styles";
 
 const Page = () => {
   const [code, setCode] = useState<number[]>([]);
@@ -123,13 +118,7 @@ const Page = () => {
         </View>
 
         <View style={styles.lastNumberRow}>
-          <TouchableOpacity onPress={onBiometricPress}>
-            <MaterialCommunityIcons
-              name="face-recognition"
-              size={26}
-              color="black"
-            />
-          </TouchableOpacity>
+          <Biometric onPress={onBiometricPress} />
 
           <TouchableOpacity onPress={() => onNumberPress(0)}>
             <Text style={styles.number}>0</Text>
@@ -143,45 +132,5 @@ const Page = () => {
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  greeting: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginTop: 80,
-    alignSelf: "center",
-  },
-  codeView: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-    gap: 20,
-    marginVertical: 100,
-  },
-  codeEmpty: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
-  },
-  numbersView: {
-    marginHorizontal: 80,
-    gap: 60,
-  },
-  numbersRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  lastNumberRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  number: {
-    fontSize: 32,
-  },
-  backButton: {
-    minWidth: 30,
-  },
-});
 
 export default Page;
