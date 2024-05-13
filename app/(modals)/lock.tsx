@@ -1,6 +1,7 @@
 import { OFFSET, TIME, codeLength } from "@/constants/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import * as LocalAuthentication from "expo-local-authentication";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import {
@@ -39,7 +40,15 @@ const Page = () => {
     setCode(code.slice(0, -1));
   };
 
-  const onBiometricPress = () => {};
+  const onBiometricPress = async () => {
+    const { success } = await LocalAuthentication.authenticateAsync();
+
+    if (success) {
+      router.replace("/");
+    } else {
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+    }
+  };
 
   useEffect(() => {
     if (code.length === 6) {
