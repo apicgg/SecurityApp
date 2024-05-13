@@ -1,3 +1,4 @@
+import { OFFSET, TIME, codeLength } from "@/constants/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
 import { useRouter } from "expo-router";
@@ -9,14 +10,24 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useSharedValue } from "react-native-reanimated";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 const Page = () => {
   const [code, setCode] = useState<number[]>([]);
   const router = useRouter();
 
-  const codeLength = Array(6).fill(0);
   const offset = useSharedValue(0);
+  const animationStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: offset.value }],
+    };
+  });
 
   const onNumberPress = (number: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -36,7 +47,15 @@ const Page = () => {
         router.replace("/");
         setCode([]);
       } else {
-        //
+        offset.value = withSequence(
+          withTiming(-OFFSET, { duration: TIME / 2 }),
+          withRepeat(withTiming(OFFSET, { duration: TIME }), 4, true),
+          withTiming(0, { duration: TIME / 2 })
+        );
+
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+
+        setCode([]);
       }
     }
   }, [code]);
@@ -45,7 +64,7 @@ const Page = () => {
     <SafeAreaView>
       <Text style={styles.greeting}>Welcome back, Anurag</Text>
 
-      <View style={[styles.codeView]}>
+      <Animated.View style={[styles.codeView, animationStyle]}>
         {codeLength.map((_, index) => (
           <View
             key={index}
@@ -57,7 +76,7 @@ const Page = () => {
             ]}
           />
         ))}
-      </View>
+      </Animated.View>
 
       <View style={styles.numbersView}>
         <View style={styles.numbersRow}>
