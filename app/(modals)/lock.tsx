@@ -1,3 +1,4 @@
+import BackspaceButton from "@/components/BackspaceButton";
 import { OFFSET, TIME, codeLength } from "@/constants/constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
@@ -135,15 +136,7 @@ const Page = () => {
           </TouchableOpacity>
 
           <View style={styles.backButton}>
-            {code.length > 0 && (
-              <TouchableOpacity onPress={onNumberDelete}>
-                <MaterialCommunityIcons
-                  name="backspace-outline"
-                  size={26}
-                  color="black"
-                />
-              </TouchableOpacity>
-            )}
+            {code.length > 0 && <BackspaceButton onPress={onNumberDelete} />}
           </View>
         </View>
       </View>
